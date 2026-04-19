@@ -1,0 +1,84 @@
+services:
+  control-plane:
+    build:
+      context: .
+      dockerfile: docker/control-plane/Dockerfile
+      args:
+        CONFIG_SOURCE: ${CONFIG_SOURCE:?CONFIG_SOURCE must be set to PROD or TEST}
+    volumes:
+      - autodev-data:/autodev-data
+      - ./autodev.compose.json:/app/autodev.compose.json:ro
+    ports:
+      - "8080:8080"
+    command: ["control-plane", "--config", "/app/autodev.compose.json", "serve", "--addr", ":8080"]
+
+  locks-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: autodev
+      POSTGRES_PASSWORD: autodev
+      POSTGRES_DB: autodev_locks
+    ports:
+      - "5434:5432"
+    volumes:
+      - autodev-locks:/var/lib/postgresql/data
+
+  ratchet-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: autodev
+      POSTGRES_PASSWORD: autodev
+      POSTGRES_DB: autodev_ratchet
+    ports:
+      - "5435:5432"
+    volumes:
+      - autodev-ratchet:/var/lib/postgresql/data
+
+  signals-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: autodev
+      POSTGRES_PASSWORD: autodev
+      POSTGRES_DB: autodev_signals
+    ports:
+      - "5436:5432"
+    volumes:
+      - autodev-signals:/var/lib/postgresql/data
+
+  worker-intake:
+    build:
+      context: .
+      dockerfile: docker/runner/Dockerfile
+      args:
+        CONFIG_SOURCE: ${CONFIG_SOURCE:?CONFIG_SOURCE must be set to PROD or TEST}
+    volumes:
+      - autodev-data:/autodev-data
+      - ./autodev.compose.json:/app/autodev.compose.json:ro
+    depends_on:
+      - locks-db
+      - ratchet-db
+      - signals-db
+      - control-plane
+    command: ["stage-runner", "--config", "/app/autodev.compose.json", "worker", "--control-plane-url", "http://control-plane:8080", "--worker-id", "worker-intake", "--stages", "intake,plan,review,release_prepare,promote_local,observe_local,promote_dev,observe_dev,promote_prod,observe_prod,closeout"]
+
+  worker-implement:
+    build:
+      context: .
+      dockerfile: docker/runner/Dockerfile
+      args:
+        CONFIG_SOURCE: ${CONFIG_SOURCE:?CONFIG_SOURCE must be set to PROD or TEST}
+    volumes:
+      - autodev-data:/autodev-data
+      - ./autodev.compose.json:/app/autodev.compose.json:ro
+    depends_on:
+      - locks-db
+      - ratchet-db
+      - signals-db
+      - control-plane
+    command: ["stage-runner", "--config", "/app/autodev.compose.json", "worker", "--control-plane-url", "http://control-plane:8080", "--worker-id", "worker-implement", "--stages", "implement,test,security"]
+
+volumes:
+  autodev-data:
+  autodev-locks:
+  autodev-ratchet:
+  autodev-signals:

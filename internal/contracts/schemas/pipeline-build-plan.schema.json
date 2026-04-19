@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pipeline-build-plan.schema.json",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "issue_id",
+    "work_order_id",
+    "issue_type",
+    "pipeline_family",
+    "delivery_name",
+    "images"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "autodev-pipeline-build-plan-v1" },
+    "run_id": { "type": "string", "minLength": 1 },
+    "issue_id": { "type": "string", "minLength": 1 },
+    "work_order_id": { "type": "string", "minLength": 1 },
+    "issue_type": { "type": "string", "minLength": 1 },
+    "pipeline_family": { "type": "string", "minLength": 1 },
+    "optimization_goals": { "type": "array", "items": { "type": "string" } },
+    "delivery_name": { "type": "string", "minLength": 1 },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stage", "image_ref", "image_digest", "container", "entrypoint", "tooling_repo", "prompt_file"],
+        "properties": {
+          "stage": { "type": "string", "minLength": 1 },
+          "image_ref": { "type": "string", "minLength": 1 },
+          "image_digest": { "type": "string", "minLength": 1 },
+          "container": { "type": "object" },
+          "entrypoint": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "tooling_repo": { "type": "object" },
+          "prompt_file": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

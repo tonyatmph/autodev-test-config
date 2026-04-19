@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "persisted-state.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["issues", "runs", "attempts", "counters"],
+  "properties": {
+    "issues": {
+      "type": "object",
+      "additionalProperties": { "type": "object" }
+    },
+    "runs": {
+      "type": "object",
+      "additionalProperties": { "type": "object" }
+    },
+    "attempts": {
+      "type": "object",
+      "additionalProperties": { "type": "object" }
+    },
+    "counters": {
+      "type": "object",
+      "additionalProperties": { "type": "integer" }
+    }
+  }
+}

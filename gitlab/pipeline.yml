@@ -1,0 +1,59 @@
+stages:
+  - validate
+  - test
+  - build
+  - build-images
+
+default:
+  image: golang:1.25
+  before_script:
+    - go version
+
+validate:
+  stage: validate
+  script:
+    - gofmt -w $(find . -name '*.go')
+    - git diff --exit-code
+
+test:
+  stage: test
+  script:
+    - go test ./...
+
+build-control-plane:
+  stage: build
+  script:
+    - go build ./cmd/control-plane
+
+build-stage-runner:
+  stage: build
+  script:
+    - go build ./cmd/stage-runner
+
+build-stage-images:
+  stage: build-images
+  image: docker:27-git
+  services:
+    - docker:27-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  before_script:
+    - apk add --no-cache python3 go git
+    - |
+      if [ "${AUTODEV_PUSH_STAGE_IMAGES:-false}" = "true" ] && [ -n "${CI_REGISTRY:-}" ] && [ -n "${CI_REGISTRY_USER:-}" ] && [ -n "${CI_REGISTRY_PASSWORD:-}" ]; then
+        echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
+        export AUTODEV_PUSH_ARGS=--push
+      else
+        export AUTODEV_PUSH_ARGS=
+      fi
+  script:
+    - python3 tools/build_stage_images.py --report containers/stage-image-build-report.json $AUTODEV_PUSH_ARGS
+    - mkdir -p bin
+    - go build -o bin/stage-runner ./cmd/stage-runner
+    - ./bin/stage-runner --config autodev.meta.json materialize --issue hack/e2e-pipeline-issue.json
+    - ./bin/stage-runner --config autodev.meta.json local --issue hack/e2e-pipeline-issue.json --smoke-secrets hack/smoke-secrets.json
+  artifacts:
+    when: always
+    paths:
+      - containers/stage-image-build-report.json

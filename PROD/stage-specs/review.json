@@ -1,0 +1,101 @@
+{
+  "name": "review",
+  "operation": "orchestrate",
+  "operation_config": {
+    "steps": [
+      {
+        "name": "review",
+        "command": [
+          "/bin/true"
+        ]
+      }
+    ]
+  },
+  "runtime": {
+    "summary": "Synthesized review findings from %d prior stage checks.",
+    "success_criteria": {
+      "require_summary": true,
+      "required_outputs": [
+        "review_report"
+      ],
+      "required_report_metadata": [
+        "state_transitions",
+        "step_log"
+      ]
+    },
+    "report_stages": [
+      "test",
+      "security"
+    ],
+    "signal": {
+      "failure_severity": "medium"
+    },
+    "stats": {
+      "model": "review-lane-v1",
+      "tool_calls": 3,
+      "tooling_usd": 0.0012,
+      "expected_artifacts": 3
+    },
+    "queue_mode": "auto"
+  },
+  "version": "v1",
+  "tooling_repo": {
+    "url": "tooling/review",
+    "ref": "main"
+  },
+  "prompt_file": "prompts/review.md",
+  "container": {
+    "run_as": "governed",
+    "write_as": "governed",
+    "materialize": [
+      "components"
+    ],
+    "permissions": {
+      "writable": [],
+      "repo_control": [],
+      "network": "restricted",
+      "runtime_user": {
+        "mode": "container-user",
+        "container_user": "governed",
+        "enforcement": "required"
+      }
+    }
+  },
+  "allowed_secrets": [],
+  "gitlab_scopes": [
+    "api:comment_issue"
+  ],
+  "input_schema": {
+    "type": "plan_and_implementation_bundle"
+  },
+  "output_schema": {
+    "type": "stage_result"
+  },
+  "artifact_policy": {
+    "required": [
+      "result",
+      "evidence"
+    ],
+    "retention": "30d",
+    "publish_to_gitlab": true,
+    "signed_summaries": true,
+    "attach_manifests": true
+  },
+  "timeout_seconds": 600,
+  "retry_policy": {
+    "max_attempts": 2,
+    "backoff_secs": 30
+  },
+  "max_parallelism": 4,
+  "dependencies": [
+    "plan",
+    "implement",
+    "generate",
+    "test",
+    "security"
+  ],
+  "approval_required": false,
+  "entrypoint": [
+    "autodev-stage-runtime"
+  ]
+}

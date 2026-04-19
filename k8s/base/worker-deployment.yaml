@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autodev-worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: autodev-worker
+  template:
+    metadata:
+      labels:
+        app: autodev-worker
+    spec:
+      containers:
+        - name: stage-runner
+          image: ghcr.io/mph-tech/autodev/stage-runner:latest
+          args:
+            - --config
+            - /etc/autodev/autodev.k8s.json
+            - worker
+            - --control-plane-url
+            - http://autodev-control-plane:8080
+            - --worker-id
+            - worker-shared
+          volumeMounts:
+            - name: autodev-data
+              mountPath: /var/lib/autodev
+            - name: autodev-config
+              mountPath: /etc/autodev
+              readOnly: true
+      volumes:
+        - name: autodev-data
+          emptyDir: {}
+        - name: autodev-config
+          configMap:
+            name: autodev-config

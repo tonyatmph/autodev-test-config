@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stage-result.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "summary",
+    "outputs",
+    "next_signals"
+  ],
+  "properties": {
+    "status": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string" },
+    "outputs": { "type": "object" },
+    "next_signals": {
+      "type": ["array", "null"],
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "stats": { "type": "object" }
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "name": "promote_prod",
+  "operation": "orchestrate",
+  "operation_config": {
+    "steps": [
+      {
+        "name": "promote_prod",
+        "command": [
+          "/bin/true"
+        ]
+      }
+    ]
+  },
+  "runtime": {
+    "environment": "prod",
+    "summary": "Promoted the approved production GitOps change.",
+    "success_criteria": {
+      "require_summary": true,
+      "required_outputs": [
+        "promotion_plan",
+        "promotion_gitops_commit"
+      ],
+      "required_report_metadata": [
+        "state_transitions",
+        "step_log"
+      ]
+    },
+    "transitions": {
+      "on_success": [
+        "observe_prod"
+      ]
+    },
+    "signal": {
+      "failure_severity": "critical"
+    },
+    "stats": {
+      "model": "autodev-stage-v1",
+      "tool_calls": 2,
+      "tooling_usd": 0.0006,
+      "expected_artifacts": 3
+    },
+    "queue_mode": "auto"
+  },
+  "version": "v1",
+  "tooling_repo": {
+    "url": "tooling/promote_prod",
+    "ref": "main"
+  },
+  "prompt_file": "prompts/promote_prod.md",
+  "container": {
+    "run_as": "governed",
+    "write_as": "governed",
+    "materialize": [
+      "gitops"
+    ],
+    "permissions": {
+      "writable": [
+        "gitops"
+      ],
+      "repo_control": [
+        "gitops"
+      ],
+      "network": "restricted",
+      "runtime_user": {
+        "mode": "container-user",
+        "container_user": "governed",
+        "enforcement": "required"
+      }
+    }
+  },
+  "allowed_secrets": [
+    "gitops-write-token"
+  ],
+  "gitlab_scopes": [
+    "api:comment_issue",
+    "api:write_repository"
+  ],
+  "input_schema": {
+    "type": "release_manifest"
+  },
+  "output_schema": {
+    "type": "stage_result"
+  },
+  "artifact_policy": {
+    "required": [
+      "result",
+      "evidence"
+    ],
+    "retention": "30d",
+    "publish_to_gitlab": true,
+    "signed_summaries": true,
+    "attach_manifests": true
+  },
+  "timeout_seconds": 300,
+  "retry_policy": {
+    "max_attempts": 1,
+    "backoff_secs": 30
+  },
+  "max_parallelism": 1,
+  "dependencies": [
+    "observe_dev"
+  ],
+  "approval_required": true,
+  "entrypoint": [
+    "autodev-stage-runtime"
+  ]
+}

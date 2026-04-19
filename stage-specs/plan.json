@@ -1,0 +1,116 @@
+{
+  "name": "plan",
+  "operation": "orchestrate",
+  "operation_config": {
+    "steps": [
+      {
+        "name": "plan",
+        "command": [
+          "/bin/true"
+        ]
+      }
+    ]
+  },
+  "runtime": {
+    "summary": "Prepared a delivery plan and evidence bundle for implementation.",
+    "success_criteria": {
+      "require_summary": true,
+      "required_outputs": [
+        "pipeline_intent",
+        "policy_evaluation",
+        "pipeline_build_plan",
+        "pipeline_execution_plan"
+      ],
+      "required_report_metadata": [
+        "state_transitions",
+        "step_log"
+      ]
+    },
+    "transitions": {
+      "on_success": [
+        "implement"
+      ]
+    },
+    "signal": {
+      "failure_severity": "medium"
+    },
+    "stats": {
+      "model": "autodev-stage-v1",
+      "tool_calls": 1,
+      "tooling_usd": 0.0006,
+      "expected_artifacts": 7
+    },
+    "output_artifacts": [
+      {
+        "name": "pipeline_intent",
+        "source": "pipeline_intent"
+      },
+      {
+        "name": "policy_evaluation",
+        "source": "policy_evaluation"
+      },
+      {
+        "name": "pipeline_build_plan",
+        "source": "pipeline_build_plan"
+      },
+      {
+        "name": "pipeline_execution_plan",
+        "source": "pipeline_execution_plan"
+      }
+    ],
+    "queue_mode": "auto"
+  },
+  "version": "v1",
+  "tooling_repo": {
+    "url": "tooling/plan",
+    "ref": "main"
+  },
+  "prompt_file": "prompts/plan.md",
+  "container": {
+    "run_as": "agent",
+    "write_as": "agent",
+    "permissions": {
+      "writable": [],
+      "repo_control": [],
+      "network": "restricted",
+      "runtime_user": {
+        "mode": "container-user",
+        "container_user": "agent",
+        "enforcement": "required"
+      }
+    }
+  },
+  "allowed_secrets": [],
+  "gitlab_scopes": [
+    "api:comment_issue"
+  ],
+  "input_schema": {
+    "type": "delivery_issue_with_prior_artifacts"
+  },
+  "output_schema": {
+    "type": "stage_result"
+  },
+  "artifact_policy": {
+    "required": [
+      "result",
+      "evidence"
+    ],
+    "retention": "30d",
+    "publish_to_gitlab": true,
+    "signed_summaries": true,
+    "attach_manifests": true
+  },
+  "timeout_seconds": 300,
+  "retry_policy": {
+    "max_attempts": 2,
+    "backoff_secs": 30
+  },
+  "max_parallelism": 4,
+  "dependencies": [
+    "intake"
+  ],
+  "approval_required": false,
+  "entrypoint": [
+    "autodev-stage-runtime"
+  ]
+}

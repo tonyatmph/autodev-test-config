@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: autodev-config
+data:
+  autodev.k8s.json: |
+    {
+      "paths": {
+        "root_dir": "/app",
+        "data_dir": "/var/lib/autodev",
+        "work_order_repo": "/var/lib/autodev/work-orders",
+        "repo_roots": []
+      },
+      "gitlab": {
+        "token_name": "gitlab-token"
+      },
+      "stores": {},
+      "secrets": {
+        "local_keychain_service": "autodev"
+      }
+    }

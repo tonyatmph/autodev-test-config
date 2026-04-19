@@ -1,0 +1,259 @@
+{
+  "id": "issue-local-0001",
+  "project_id": "hack/local",
+  "iid": 1,
+  "title": "Local smoke delivery for api/config/docs",
+  "description": "Validate the local fixture lane by pushing a coordinated delivery object composed of the api, config, and docs components.",
+  "labels": [
+    "delivery/requested",
+    "priority/low"
+  ],
+  "work_order": {
+    "id": "wo-local-0001",
+    "source_issue_id": "issue-local-0001",
+    "issue_type": "bug_fix",
+    "requested_outcome": "Build, validate, and document the api/config/docs delivery object in local/dev environments using the fixture repos.",
+    "policy_profile": "local-smoke",
+    "pipeline_template": "development-blind-tests-v1",
+    "issuer_authority": {
+      "can_create_pipeline": false,
+      "roles": [
+        "delivery-author"
+      ]
+    },
+    "testing": {
+      "strategy": "tests-before-implementation",
+      "immutable": true,
+      "readable_by_agent": false,
+      "executable_by_agent": true,
+      "inspection_points": [
+        {
+          "name": "spec",
+          "category": "spec",
+          "description": "Executable spec tests are immutable and hidden from the agent.",
+          "immutable": true,
+          "readable_by_agent": false,
+          "executable_by_agent": true
+        },
+        {
+          "name": "security",
+          "category": "security",
+          "description": "Security inspection is treated as a test gate.",
+          "immutable": true,
+          "readable_by_agent": true,
+          "executable_by_agent": true
+        },
+        {
+          "name": "architecture",
+          "category": "architecture",
+          "description": "Architecture inspection is treated as a test gate.",
+          "immutable": true,
+          "readable_by_agent": true,
+          "executable_by_agent": true
+        }
+      ]
+    },
+    "translation": {
+      "translator": "local-fixture",
+      "version": "v1",
+      "status": "translated",
+      "warnings": []
+    },
+    "delivery": {
+      "name": "local-demo",
+      "primary_component": "api",
+      "selected_components": [
+        "api",
+        "config",
+        "docs"
+      ],
+      "deploy_as_unit": true,
+      "documentation": {
+        "required": true,
+        "docs_component": "docs",
+        "required_kinds": [
+          "api",
+          "config"
+        ]
+      },
+      "journal": {
+        "name": "autodev-e2e-work-orders",
+        "repo": {
+          "project_path": "mph-tech/autodev-e2e-work-orders",
+          "default_branch": "main",
+          "working_branch_prefix": "autodev",
+          "ref": "main",
+          "materialization_path": "data/repos/{run_id}/journal/autodev-e2e-work-orders"
+        },
+        "path": "runs",
+        "strategy": "git",
+        "description": "Durable local journal for work-order and release summaries."
+      },
+      "components": {
+        "api": {
+          "name": "local-api",
+          "kind": "api",
+          "deployable": true,
+          "repo": {
+            "project_path": "mph-tech/autodev-e2e-app",
+            "default_branch": "main",
+            "working_branch_prefix": "autodev",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/components/api"
+          },
+          "ownership": [
+            {
+              "identity": "agent",
+              "paths": [
+                "src/**"
+              ],
+              "mutable": true
+            },
+            {
+              "identity": "generator",
+              "paths": [
+                "generated/**"
+              ],
+              "mutable": true
+            },
+            {
+              "identity": "governed",
+              "paths": [
+                "prompts/**",
+                "stage-specs/**",
+                "policy/**"
+              ],
+              "mutable": true
+            }
+          ],
+          "release": {
+            "application": {
+              "artifact_name": "local-api",
+              "image_repo": "registry.local/local-api"
+            }
+          }
+        },
+        "config": {
+          "name": "local-config",
+          "kind": "config",
+          "deployable": true,
+          "depends_on": [
+            "api"
+          ],
+          "repo": {
+            "project_path": "mph-tech/autodev-e2e-app",
+            "default_branch": "main",
+            "working_branch_prefix": "autodev",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/components/config"
+          },
+          "ownership": [
+            {
+              "identity": "agent",
+              "paths": [
+                "src/**"
+              ],
+              "mutable": true
+            },
+            {
+              "identity": "generator",
+              "paths": [
+                "generated/**"
+              ],
+              "mutable": true
+            }
+          ],
+          "release": {
+            "application": {
+              "artifact_name": "local-config",
+              "image_repo": "registry.local/local-config"
+            }
+          }
+        },
+        "docs": {
+          "name": "local-docs",
+          "kind": "docs",
+          "deployable": true,
+          "depends_on": [
+            "api",
+            "config"
+          ],
+          "repo": {
+            "project_path": "mph-tech/autodev-e2e-app",
+            "default_branch": "main",
+            "working_branch_prefix": "autodev",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/components/docs"
+          },
+          "ownership": [
+            {
+              "identity": "agent",
+              "paths": [
+                "docs/**"
+              ],
+              "mutable": true
+            },
+            {
+              "identity": "generator",
+              "paths": [
+                "generated/**"
+              ],
+              "mutable": true
+            }
+          ]
+        }
+      },
+      "environments": {
+        "local": {
+          "name": "local",
+          "gitops_repo": {
+            "project_path": "mph-tech/autodev-e2e-gitops",
+            "environment": "local",
+            "path": "clusters/local/autodev-e2e-app",
+            "promotion_branch": "main",
+            "cluster": "kind-local",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/gitops/local"
+          },
+          "approval_required": false,
+          "rollout_strategy": "recreate",
+          "runtime_secret_refs": []
+        },
+        "dev": {
+          "name": "dev",
+          "gitops_repo": {
+            "project_path": "mph-tech/autodev-e2e-gitops",
+            "environment": "dev",
+            "path": "clusters/dev/autodev-e2e-app",
+            "promotion_branch": "main",
+            "cluster": "dev-local",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/gitops/dev"
+          },
+          "approval_required": false,
+          "rollout_strategy": "rolling",
+          "runtime_secret_refs": []
+        }
+      },
+      "release": {
+        "application": {
+          "artifact_name": "local-api",
+          "image_repo": "registry.local/local-api"
+        }
+      }
+    }
+  },
+  "approval": {
+    "label": "delivery/approved",
+    "approved": false,
+    "approved_by": "",
+    "approved_at": null
+  },
+  "merge_requests": [],
+  "artifacts": [],
+  "metadata": {
+    "tenant": "local",
+    "drift_policy": "gitops-only"
+  },
+  "updated_at": "2026-04-13T00:00:00Z"
+}

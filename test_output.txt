@@ -1,0 +1,49 @@
+=== RUN   TestMaterializePipelineArtifactsUsesRuntimeAndReducedEnv
+[autodev-stage] write result: create directory for /var/folders/rh/kc7c2v9n10v6z0llcy8cm3zc0000gn/T/TestMaterializePipelineArtifactsUsesRuntimeAndReducedEnv3162548382/001/workspaces/run-1/plan/result.json: mkdir /var/folders/rh/kc7c2v9n10v6z0llcy8cm3zc0000gn/T/TestMaterializePipelineArtifactsUsesRuntimeAndReducedEnv3162548382/001: permission denied
+    materialize_test.go:73: materialize pipeline artifacts: materialize pipeline plan via stage runtime: exit status 2
+--- FAIL: TestMaterializePipelineArtifactsUsesRuntimeAndReducedEnv (0.21s)
+=== RUN   TestProjectCurrentState
+    projection_test.go:43: Projection Nodes: map[A:{Name:A Status:succeeded Fitness:0 LastSHA:SHA-FROM-A} B:{Name:B Status:succeeded Fitness:0 LastSHA:SHA-FROM-B}]
+--- PASS: TestProjectCurrentState (0.00s)
+=== RUN   TestResolver
+--- PASS: TestResolver (0.00s)
+=== RUN   TestExecuteWritesResolvedSecretsAndContextToWorkspace
+[autodev-stage] write result: create directory for /var/folders/rh/kc7c2v9n10v6z0llcy8cm3zc0000gn/T/autodev-runner-data-1065942408/workspaces/run-1/promote_local/result.json: mkdir /var/folders/rh/kc7c2v9n10v6z0llcy8cm3zc0000gn/T/autodev-runner-data-1065942408/workspaces: permission denied
+    runner_test.go:212: run stage entrypoint for promote_local: exit status 2
+--- FAIL: TestExecuteWritesResolvedSecretsAndContextToWorkspace (0.40s)
+=== RUN   TestExecuteRequiresContainerExecutionEnvironment
+--- PASS: TestExecuteRequiresContainerExecutionEnvironment (0.12s)
+=== RUN   TestExecuteRunsExternalEntrypointAndCommitsImplementation
+    runner_test.go:278: skipping due to removal of python helpers
+--- SKIP: TestExecuteRunsExternalEntrypointAndCommitsImplementation (0.00s)
+=== RUN   TestExecuteWritesReleaseManifestArtifactFromContainerOutput
+    runner_test.go:371: skipping due to removal of python helpers
+--- SKIP: TestExecuteWritesReleaseManifestArtifactFromContainerOutput (0.00s)
+=== RUN   TestExecuteEmitsPipelineMaterializationArtifacts
+    runner_test.go:477: skipping due to removal of python helpers
+--- SKIP: TestExecuteEmitsPipelineMaterializationArtifacts (0.00s)
+=== RUN   TestStageCatalogForRunRequiresPipelinePlan
+--- PASS: TestStageCatalogForRunRequiresPipelinePlan (0.13s)
+=== RUN   TestExecuteRejectsPipelinePlanRuntimeDigestMismatch
+--- PASS: TestExecuteRejectsPipelinePlanRuntimeDigestMismatch (0.11s)
+=== RUN   TestExecutePreservesEvidenceWhenSuccessCriteriaFail
+[autodev-stage] write result: create directory for /var/folders/rh/kc7c2v9n10v6z0llcy8cm3zc0000gn/T/TestExecutePreservesEvidenceWhenSuccessCriteriaFail3108453295/001/workspaces/run-criteria/intake/result.json: mkdir /var/folders/rh/kc7c2v9n10v6z0llcy8cm3zc0000gn/T/TestExecutePreservesEvidenceWhenSuccessCriteriaFail3108453295/001: permission denied
+    runner_test.go:830: run stage entrypoint for intake: exit status 2
+--- FAIL: TestExecutePreservesEvidenceWhenSuccessCriteriaFail (0.31s)
+=== RUN   TestExecuteWithProgressReportsRealtimeState
+    runner_test.go:882: legacy
+--- SKIP: TestExecuteWithProgressReportsRealtimeState (0.00s)
+FAIL
+FAIL	g7.mph.tech/mph-tech/autodev/internal/runner	1.471s
+=== RUN   TestCognitionLLMIntegration
+    cognition_test.go:23: llm call failed: googleapi: Error 400: API key not valid. Please pass a valid API key.
+        error details: name = ErrorInfo reason = API_KEY_INVALID domain = googleapis.com metadata = map[service:generativelanguage.googleapis.com]
+        error details: name = LocalizedMessage locale = en-US msg = API key not valid. Please pass a valid API key.
+--- FAIL: TestCognitionLLMIntegration (0.08s)
+=== RUN   TestFullPipelineResolution
+--- PASS: TestFullPipelineResolution (0.00s)
+=== RUN   TestChaosMonkeyRecovery
+--- PASS: TestChaosMonkeyRecovery (0.00s)
+FAIL
+FAIL	g7.mph.tech/mph-tech/autodev/internal/e2e	0.319s
+FAIL

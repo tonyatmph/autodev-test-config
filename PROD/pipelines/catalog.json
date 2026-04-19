@@ -1,0 +1,160 @@
+{
+  "schema_version": "autodev-pipeline-catalog-v1",
+  "issue_types": {
+    "bug_fix": {
+      "family": "bugfix",
+      "preferred_pipeline": "development-blind-tests-v1",
+      "optimization_goals": [
+        "cycle_time",
+        "software_quality",
+        "regression_prevention"
+      ]
+    },
+    "new_feature": {
+      "family": "feature",
+      "preferred_pipeline": "development-blind-tests-v1",
+      "optimization_goals": [
+        "software_quality",
+        "build_efficiency",
+        "product_performance"
+      ]
+    },
+    "major_refactor": {
+      "family": "refactor",
+      "preferred_pipeline": "refactor-governed-v1",
+      "optimization_goals": [
+        "architecture_quality",
+        "performance",
+        "delivery_reliability"
+      ]
+    },
+    "new_product": {
+      "family": "new-product",
+      "preferred_pipeline": "product-bootstrap-v1",
+      "optimization_goals": [
+        "delivery_reliability",
+        "build_efficiency",
+        "product_quality"
+      ]
+    }
+  },
+  "pipelines": {
+    "development-blind-tests-v1": {
+      "family": "development",
+      "accepted_issue_types": [
+        "bug_fix",
+        "new_feature"
+      ],
+      "testing_policy": "blind-executable-spec-v1",
+      "optimization_goals": [
+        "software_quality",
+        "build_efficiency",
+        "product_performance"
+      ],
+      "summary": "Development pipeline optimized for feature and bug delivery with immutable executable tests and stage-level inspection tests."
+    },
+    "refactor-governed-v1": {
+      "family": "refactor",
+      "accepted_issue_types": [
+        "major_refactor"
+      ],
+      "testing_policy": "governed-inspection-v1",
+      "optimization_goals": [
+        "architecture_quality",
+        "software_quality",
+        "performance"
+      ],
+      "summary": "Refactor pipeline optimized for architectural change with heavier governed inspection points."
+    },
+    "product-bootstrap-v1": {
+      "family": "product-bootstrap",
+      "accepted_issue_types": [
+        "new_product"
+      ],
+      "testing_policy": "governed-inspection-v1",
+      "optimization_goals": [
+        "product_quality",
+        "delivery_reliability",
+        "build_efficiency"
+      ],
+      "summary": "Bootstrap pipeline for new products with governed controls and broad inspection coverage.",
+      "creation_policy": {
+        "allow_materialized_creation": true
+      }
+    }
+  },
+  "testing_policies": {
+    "blind-executable-spec-v1": {
+      "strategy": "tests-before-implementation",
+      "immutable": true,
+      "readable_by_agent": false,
+      "executable_by_agent": true,
+      "inspection_points": [
+        {
+          "name": "spec",
+          "category": "spec",
+          "description": "Executable spec tests are immutable and hidden from the agent.",
+          "immutable": true,
+          "readable_by_agent": false,
+          "executable_by_agent": true
+        },
+        {
+          "name": "security",
+          "category": "security",
+          "description": "Security testing is part of the delivery contract.",
+          "immutable": true,
+          "readable_by_agent": true,
+          "executable_by_agent": true
+        },
+        {
+          "name": "architecture",
+          "category": "architecture",
+          "description": "Architecture inspection is treated as a test gate.",
+          "immutable": true,
+          "readable_by_agent": true,
+          "executable_by_agent": true
+        },
+        {
+          "name": "performance",
+          "category": "performance",
+          "description": "Performance inspection is treated as a test gate.",
+          "immutable": true,
+          "readable_by_agent": true,
+          "executable_by_agent": true
+        }
+      ]
+    },
+    "governed-inspection-v1": {
+      "strategy": "governed-inspection",
+      "immutable": true,
+      "readable_by_agent": true,
+      "executable_by_agent": true,
+      "inspection_points": [
+        {
+          "name": "spec",
+          "category": "spec",
+          "description": "Spec conformance test.",
+          "immutable": true,
+          "readable_by_agent": true,
+          "executable_by_agent": true
+        },
+        {
+          "name": "security",
+          "category": "security",
+          "description": "Security inspection test.",
+          "immutable": true,
+          "readable_by_agent": true,
+          "executable_by_agent": true
+        },
+        {
+          "name": "architecture",
+          "category": "architecture",
+          "description": "Architecture inspection test.",
+          "immutable": true,
+          "readable_by_agent": true,
+          "executable_by_agent": true
+        }
+      ]
+    }
+  }
+}

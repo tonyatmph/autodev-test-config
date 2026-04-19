@@ -1,0 +1,21 @@
+{
+  "paths": {
+    "root_dir": ".",
+    "data_dir": "/tmp/autodev-data",
+    "work_order_repo": "/tmp/autodev-e2e-repos/autodev-e2e-work-orders",
+    "repo_roots": [
+      "/tmp/autodev-e2e-repos"
+    ],
+    "smoke_secrets": "hack/smoke-secrets.json"
+  },
+  "gitlab": {
+    "token_name": "gitlab-token"
+  },
+  "stores": {
+    "ratchet_postgres_dsn": "noop"
+  },
+  "secrets": {
+    "gcp_project": "mph-nitro-prod",
+    "local_keychain_service": "autodev"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "name": "observe_rollback_prod",
+  "operation": "orchestrate",
+  "operation_config": {
+    "steps": [
+      {
+        "name": "observe_rollback_prod",
+        "command": [
+          "/bin/true"
+        ]
+      }
+    ]
+  },
+  "runtime": {
+    "queue_mode": "triggered",
+    "environment": "prod",
+    "summary": "Observed rollback health for prod after GitOps reconciliation.",
+    "success_criteria": {
+      "require_summary": true,
+      "required_outputs": [
+        "rollback_observation"
+      ],
+      "required_report_metadata": [
+        "state_transitions",
+        "step_log"
+      ]
+    },
+    "checkpoint_status": "failed",
+    "signal": {
+      "failure_severity": "critical"
+    },
+    "stats": {
+      "model": "autodev-stage-v1",
+      "tool_calls": 1,
+      "tooling_usd": 0.0006,
+      "expected_artifacts": 3
+    }
+  },
+  "container": {
+    "run_as": "governed",
+    "write_as": "governed",
+    "permissions": {
+      "writable": [],
+      "repo_control": [],
+      "network": "restricted",
+      "runtime_user": {
+        "mode": "container-user",
+        "container_user": "governed",
+        "enforcement": "required"
+      }
+    }
+  },
+  "version": "v1",
+  "tooling_repo": {
+    "url": "tooling/observe_rollback_prod",
+    "ref": "main"
+  },
+  "prompt_file": "prompts/observe_rollback_prod.md",
+  "allowed_secrets": [],
+  "gitlab_scopes": [
+    "api:comment_issue"
+  ],
+  "input_schema": {
+    "type": "prod_rollback_bundle"
+  },
+  "output_schema": {
+    "type": "stage_result"
+  },
+  "artifact_policy": {
+    "required": [
+      "result",
+      "evidence"
+    ],
+    "retention": "30d",
+    "publish_to_gitlab": true,
+    "signed_summaries": true,
+    "attach_manifests": true
+  },
+  "timeout_seconds": 180,
+  "retry_policy": {
+    "max_attempts": 2,
+    "backoff_secs": 20
+  },
+  "max_parallelism": 1,
+  "dependencies": [
+    "rollback_prod"
+  ],
+  "approval_required": false,
+  "entrypoint": [
+    "autodev-stage-runtime"
+  ]
+}

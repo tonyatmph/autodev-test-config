@@ -1,0 +1,21 @@
+{
+  "paths": {
+    "root_dir": "/app",
+    "data_dir": "/autodev-data",
+    "work_order_repo": "/autodev-data/work-orders",
+    "repo_roots": [],
+    "smoke_secrets": "/app/hack/smoke-secrets.json"
+  },
+  "gitlab": {
+    "token_name": "gitlab-token"
+  },
+  "stores": {
+    "locks_postgres_dsn": "postgres://autodev:autodev@locks-db:5432/autodev_locks?sslmode=disable",
+    "ratchet_postgres_dsn": "postgres://autodev:autodev@ratchet-db:5432/autodev_ratchet?sslmode=disable",
+    "signals_postgres_dsn": "postgres://autodev:autodev@signals-db:5432/autodev_signals?sslmode=disable"
+  },
+  "secrets": {
+    "gcp_project": "mph-nitro-prod",
+    "local_keychain_service": "autodev"
+  }
+}

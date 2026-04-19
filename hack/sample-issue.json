@@ -1,0 +1,422 @@
+{
+  "id": "issue-1001",
+  "project_id": "platform/example",
+  "iid": 1001,
+  "title": "Create a delivery issue for a coordinated multi-surface release",
+  "description": "Implement a scaffold change and carry it to an approval gate.",
+  "labels": [
+    "delivery/requested",
+    "priority/high"
+  ],
+  "work_order": {
+    "id": "wo-issue-1001",
+    "source_issue_id": "issue-1001",
+    "issue_type": "new_feature",
+    "requested_outcome": "Produce a merge-ready change and promote a coordinated delivery object across api, console, prompts, config, and mobile using GitOps-managed app, infra, and database changes.",
+    "policy_profile": "default",
+    "pipeline_template": "development-blind-tests-v1",
+    "issuer_authority": {
+      "can_create_pipeline": true,
+      "roles": [
+        "product-engineer",
+        "pipeline-author"
+      ]
+    },
+    "testing": {
+      "strategy": "tests-before-implementation",
+      "immutable": true,
+      "readable_by_agent": false,
+      "executable_by_agent": true,
+      "inspection_points": [
+        {
+          "name": "spec",
+          "category": "spec",
+          "description": "Executable spec tests are immutable and hidden from the agent.",
+          "immutable": true,
+          "readable_by_agent": false,
+          "executable_by_agent": true
+        },
+        {
+          "name": "security",
+          "category": "security",
+          "description": "Security testing is part of the delivery contract.",
+          "immutable": true,
+          "readable_by_agent": true,
+          "executable_by_agent": true
+        },
+        {
+          "name": "architecture",
+          "category": "architecture",
+          "description": "Architecture testing is part of the delivery contract.",
+          "immutable": true,
+          "readable_by_agent": true,
+          "executable_by_agent": true
+        },
+        {
+          "name": "performance",
+          "category": "performance",
+          "description": "Performance testing is part of the delivery contract.",
+          "immutable": true,
+          "readable_by_agent": true,
+          "executable_by_agent": true
+        }
+      ]
+    },
+    "translation": {
+      "translator": "sample-seed",
+      "version": "v1",
+      "status": "translated",
+      "warnings": []
+    },
+    "delivery": {
+      "name": "example-platform",
+      "primary_component": "api",
+      "selected_components": [
+        "api",
+        "console",
+        "prompts",
+        "config",
+        "mobile",
+        "docs"
+      ],
+      "deploy_as_unit": true,
+      "documentation": {
+        "required": true,
+        "docs_component": "docs",
+        "required_kinds": [
+          "api",
+          "console",
+          "prompts",
+          "config",
+          "mobile"
+        ]
+      },
+      "journal": {
+        "name": "example-work-orders",
+        "repo": {
+          "project_path": "work-orders",
+          "default_branch": "main",
+          "working_branch_prefix": "autodev",
+          "ref": "main",
+          "materialization_path": "data/repos/{run_id}/journal/example-work-orders"
+        },
+        "path": "runs",
+        "strategy": "git",
+        "description": "Durable journal for canonical work orders and release summaries."
+      },
+      "components": {
+        "api": {
+          "name": "example-api",
+          "kind": "api",
+          "deployable": true,
+          "repo": {
+            "project_path": "platform/example-api",
+            "default_branch": "main",
+            "working_branch_prefix": "autodev",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/components/api"
+          },
+          "ownership": [
+            {
+              "identity": "agent",
+              "paths": [
+                "src/**",
+                "contracts/**",
+                "templates/**"
+              ],
+              "mutable": true
+            },
+            {
+              "identity": "generator",
+              "paths": [
+                "generated/**"
+              ],
+              "mutable": true
+            },
+            {
+              "identity": "governed",
+              "paths": [
+                "prompts/**",
+                "stage-specs/**",
+                "policy/**"
+              ],
+              "mutable": true
+            }
+          ],
+          "release": {
+            "application": {
+              "artifact_name": "example-api",
+              "image_repo": "registry.mph.tech/example-api"
+            },
+            "infrastructure": {
+              "ref": "infra/example-api@v2026.04.13",
+              "gitops_only": true,
+              "terraform_root": "terraform/example-api"
+            },
+            "database": {
+              "bundle_ref": "db/example-api/20260413_add_release_tracking",
+              "compatibility": "expand-contract",
+              "gitops_managed_job": true
+            }
+          }
+        },
+        "console": {
+          "name": "example-console",
+          "kind": "console",
+          "deployable": true,
+          "depends_on": [
+            "api",
+            "config"
+          ],
+          "repo": {
+            "project_path": "platform/example-console",
+            "default_branch": "main",
+            "working_branch_prefix": "autodev",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/components/console"
+          },
+          "release": {
+            "application": {
+              "artifact_name": "example-console",
+              "image_repo": "registry.mph.tech/example-console"
+            },
+            "infrastructure": {
+              "ref": "infra/example-console@v2026.04.13",
+              "gitops_only": true,
+              "terraform_root": "terraform/example-console"
+            },
+            "database": {
+              "bundle_ref": "db/example-console/noop",
+              "compatibility": "none",
+              "gitops_managed_job": false
+            }
+          }
+        },
+        "prompts": {
+          "name": "example-prompts",
+          "kind": "prompts",
+          "deployable": true,
+          "depends_on": [
+            "config"
+          ],
+          "repo": {
+            "project_path": "platform/example-prompts",
+            "default_branch": "main",
+            "working_branch_prefix": "autodev",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/components/prompts"
+          },
+          "release": {
+            "application": {
+              "artifact_name": "example-prompts",
+              "image_repo": "registry.mph.tech/example-prompts"
+            },
+            "infrastructure": {
+              "ref": "infra/example-prompts@v2026.04.13",
+              "gitops_only": true,
+              "terraform_root": "terraform/example-prompts"
+            },
+            "database": {
+              "bundle_ref": "db/example-prompts/noop",
+              "compatibility": "none",
+              "gitops_managed_job": false
+            }
+          }
+        },
+        "config": {
+          "name": "example-config",
+          "kind": "config",
+          "deployable": true,
+          "depends_on": [
+            "api"
+          ],
+          "repo": {
+            "project_path": "platform/example-config",
+            "default_branch": "main",
+            "working_branch_prefix": "autodev",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/components/config"
+          },
+          "release": {
+            "application": {
+              "artifact_name": "example-config",
+              "image_repo": "registry.mph.tech/example-config"
+            },
+            "infrastructure": {
+              "ref": "infra/example-config@v2026.04.13",
+              "gitops_only": true,
+              "terraform_root": "terraform/example-config"
+            },
+            "database": {
+              "bundle_ref": "db/example-config/noop",
+              "compatibility": "none",
+              "gitops_managed_job": false
+            }
+          }
+        },
+        "mobile": {
+          "name": "example-mobile",
+          "kind": "mobile",
+          "deployable": true,
+          "depends_on": [
+            "api",
+            "config",
+            "prompts"
+          ],
+          "repo": {
+            "project_path": "platform/example-mobile",
+            "default_branch": "main",
+            "working_branch_prefix": "autodev",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/components/mobile"
+          },
+          "release": {
+            "application": {
+              "artifact_name": "example-mobile",
+              "image_repo": "registry.mph.tech/example-mobile"
+            },
+            "infrastructure": {
+              "ref": "infra/example-mobile@v2026.04.13",
+              "gitops_only": true,
+              "terraform_root": "terraform/example-mobile"
+            },
+            "database": {
+              "bundle_ref": "db/example-mobile/noop",
+              "compatibility": "none",
+              "gitops_managed_job": false
+            }
+          }
+        },
+        "docs": {
+          "name": "example-docs",
+          "kind": "docs",
+          "deployable": true,
+          "depends_on": [
+            "api",
+            "console",
+            "config",
+            "prompts",
+            "mobile"
+          ],
+          "repo": {
+            "project_path": "platform/example-docs",
+            "default_branch": "main",
+            "working_branch_prefix": "autodev",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/components/docs"
+          },
+          "release": {
+            "application": {
+              "artifact_name": "example-docs",
+              "image_repo": "registry.mph.tech/example-docs"
+            },
+            "infrastructure": {
+              "ref": "infra/example-docs@v2026.04.13",
+              "gitops_only": true,
+              "terraform_root": "terraform/example-docs"
+            },
+            "database": {
+              "bundle_ref": "db/example-docs/noop",
+              "compatibility": "none",
+              "gitops_managed_job": false
+            }
+          }
+        }
+      },
+      "environments": {
+        "local": {
+          "name": "local",
+          "gitops_repo": {
+            "project_path": "platform/example-gitops",
+            "environment": "local",
+            "path": "clusters/local/example-platform",
+            "promotion_branch": "main",
+            "cluster": "kind-local",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/gitops/local"
+          },
+          "approval_required": false,
+          "rollout_strategy": "recreate",
+          "runtime_secret_refs": [
+            {
+              "name": "db_url",
+              "provider": "local-keychain",
+              "ref": "autodev/example-platform/local/db_url"
+            }
+          ]
+        },
+        "dev": {
+          "name": "dev",
+          "gitops_repo": {
+            "project_path": "platform/example-gitops",
+            "environment": "dev",
+            "path": "clusters/dev/example-platform",
+            "promotion_branch": "main",
+            "cluster": "dev-us-east-1",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/gitops/dev"
+          },
+          "approval_required": false,
+          "rollout_strategy": "rolling",
+          "runtime_secret_refs": [
+            {
+              "name": "db_url",
+              "provider": "gcp-secret-manager",
+              "ref": "example-platform-dev-db-url"
+            }
+          ]
+        },
+        "prod": {
+          "name": "prod",
+          "gitops_repo": {
+            "project_path": "platform/example-gitops",
+            "environment": "prod",
+            "path": "clusters/prod/example-platform",
+            "promotion_branch": "main",
+            "cluster": "prod-us-east-1",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/gitops/prod"
+          },
+          "approval_required": true,
+          "rollout_strategy": "canary",
+          "runtime_secret_refs": [
+            {
+              "name": "db_url",
+              "provider": "gcp-secret-manager",
+              "ref": "example-platform-prod-db-url"
+            }
+          ]
+        }
+      },
+      "release": {
+        "application": {
+          "artifact_name": "example-api",
+          "image_repo": "registry.mph.tech/example-api"
+        },
+        "infrastructure": {
+          "ref": "infra/example-platform@v2026.04.13",
+          "gitops_only": true,
+          "terraform_root": "terraform/example-platform"
+        },
+        "database": {
+          "bundle_ref": "db/example-platform/20260413_add_release_tracking",
+          "compatibility": "expand-contract",
+          "gitops_managed_job": true
+        }
+      }
+    }
+  },
+  "approval": {
+    "label": "delivery/approved",
+    "approved": false,
+    "approved_by": "",
+    "approved_at": null
+  },
+  "merge_requests": [],
+  "artifacts": [],
+  "metadata": {
+    "tenant": "example-org",
+    "drift_policy": "gitops-only"
+  },
+  "updated_at": "2026-04-13T00:00:00Z"
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "config.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["paths", "gitlab", "stores", "secrets"],
+  "properties": {
+    "paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root_dir", "data_dir", "work_order_repo"],
+      "properties": {
+        "root_dir": { "type": "string", "minLength": 1 },
+        "data_dir": { "type": "string", "minLength": 1 },
+        "work_order_repo": { "type": "string", "minLength": 1 },
+        "repo_roots": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "smoke_secrets": { "type": "string", "minLength": 1 }
+      }
+    },
+    "gitlab": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["token_name"],
+      "properties": {
+        "base_url": { "type": "string", "minLength": 1 },
+        "issues_project": { "type": "string", "minLength": 1 },
+        "token": { "type": "string", "minLength": 1 },
+        "token_name": { "type": "string", "minLength": 1 }
+      }
+    },
+    "stores": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "locks_postgres_dsn": { "type": "string", "minLength": 1 },
+        "ratchet_postgres_dsn": { "type": "string", "minLength": 1 },
+        "signals_postgres_dsn": { "type": "string", "minLength": 1 }
+      }
+    },
+    "secrets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["local_keychain_service"],
+      "properties": {
+        "gcp_project": { "type": "string", "minLength": 1 },
+        "local_keychain_service": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

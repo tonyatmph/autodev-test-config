@@ -1,0 +1,118 @@
+{
+  "name": "release_prepare",
+  "operation": "orchestrate",
+  "operation_config": {
+    "steps": [
+      {
+        "name": "release_prepare",
+        "command": [
+          "/bin/true"
+        ]
+      }
+    ]
+  },
+  "runtime": {
+    "summary": "Prepared a release bundle and committed journal entry %s.",
+    "success_criteria": {
+      "require_summary": true,
+      "required_outputs": [
+        "release_bundle",
+        "release_manifest",
+        "release_manifest_summary"
+      ],
+      "required_report_metadata": [
+        "state_transitions",
+        "step_log"
+      ]
+    },
+    "report_stages": [
+      "test",
+      "security",
+      "review"
+    ],
+    "transitions": {
+      "on_success": [
+        "promote_local"
+      ]
+    },
+    "signal": {
+      "failure_severity": "medium"
+    },
+    "stats": {
+      "model": "autodev-stage-v1",
+      "tool_calls": 1,
+      "tooling_usd": 0.0006,
+      "expected_artifacts": 4
+    },
+    "output_artifacts": [
+      {
+        "name": "release_manifest",
+        "source": "manifest"
+      }
+    ],
+    "queue_mode": "auto"
+  },
+  "version": "v1",
+  "tooling_repo": {
+    "url": "tooling/release_prepare",
+    "ref": "main"
+  },
+  "prompt_file": "prompts/release_prepare.md",
+  "container": {
+    "run_as": "governed",
+    "write_as": "governed",
+    "materialize": [
+      "components",
+      "journal"
+    ],
+    "permissions": {
+      "writable": [
+        "journal"
+      ],
+      "repo_control": [
+        "journal"
+      ],
+      "network": "restricted",
+      "runtime_user": {
+        "mode": "container-user",
+        "container_user": "governed",
+        "enforcement": "required"
+      }
+    }
+  },
+  "allowed_secrets": [],
+  "gitlab_scopes": [
+    "api:comment_issue"
+  ],
+  "input_schema": {
+    "type": "reviewed_bundle"
+  },
+  "output_schema": {
+    "type": "stage_result"
+  },
+  "artifact_policy": {
+    "required": [
+      "result",
+      "evidence"
+    ],
+    "retention": "30d",
+    "publish_to_gitlab": true,
+    "signed_summaries": true,
+    "attach_manifests": true
+  },
+  "timeout_seconds": 300,
+  "retry_policy": {
+    "max_attempts": 2,
+    "backoff_secs": 30
+  },
+  "max_parallelism": 2,
+  "dependencies": [
+    "test",
+    "security",
+    "review"
+  ],
+  "approval_required": false,
+  "entrypoint": [
+    "autodev-stage-runtime"
+  ]
+}

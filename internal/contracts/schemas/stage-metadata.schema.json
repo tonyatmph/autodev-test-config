@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stage-metadata.schema.json",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "state_transitions",
+    "step_log"
+  ],
+  "properties": {
+    "state_transitions": {
+      "type": "array"
+    },
+    "step_log": {
+      "type": "array"
+    }
+  }
+}

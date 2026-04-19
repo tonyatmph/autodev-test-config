@@ -1,0 +1,5 @@
+{
+  "paths": {
+    "repo_roots": ["e2e/fixture-project"]
+  }
+}

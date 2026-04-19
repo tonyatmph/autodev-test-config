@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stage-state.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "timestamp",
+    "run_id",
+    "attempt_id",
+    "issue_id",
+    "stage",
+    "state",
+    "next_state",
+    "current_step",
+    "status",
+    "summary",
+    "metadata"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "autodev-stage-state-v2"
+    },
+    "timestamp": { "type": "string", "minLength": 1 },
+    "run_id": { "type": "string" },
+    "attempt_id": { "type": "string" },
+    "issue_id": { "type": "string" },
+    "stage": { "type": "string" },
+    "state": { "type": "string", "minLength": 1 },
+    "next_state": { "type": "string" },
+    "current_step": { "type": "string" },
+    "status": { "type": "string" },
+    "summary": { "type": "string" },
+    "last_transition": {},
+    "metadata": { "type": "object" }
+  }
+}

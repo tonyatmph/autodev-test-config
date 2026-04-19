@@ -1,0 +1,91 @@
+{
+  "name": "intake",
+  "operation": "orchestrate",
+  "operation_config": {
+    "steps": [
+      {
+        "name": "intake",
+        "command": [
+          "/bin/true"
+        ]
+      }
+    ]
+  },
+  "runtime": {
+    "summary": "Captured delivery request metadata and normalized GitLab issue state.",
+    "success_criteria": {
+      "require_summary": true,
+      "required_report_metadata": [
+        "state_transitions",
+        "step_log"
+      ]
+    },
+    "transitions": {
+      "on_success": [
+        "plan"
+      ]
+    },
+    "signal": {
+      "failure_severity": "medium"
+    },
+    "stats": {
+      "model": "autodev-stage-v1",
+      "tool_calls": 1,
+      "tooling_usd": 0.0006,
+      "expected_artifacts": 3
+    },
+    "queue_mode": "auto"
+  },
+  "version": "v1",
+  "tooling_repo": {
+    "url": "tooling/intake",
+    "ref": "main"
+  },
+  "prompt_file": "prompts/intake.md",
+  "container": {
+    "run_as": "governed",
+    "write_as": "governed",
+    "permissions": {
+      "writable": [],
+      "repo_control": [],
+      "network": "restricted",
+      "runtime_user": {
+        "mode": "container-user",
+        "container_user": "governed",
+        "enforcement": "required"
+      }
+    }
+  },
+  "allowed_secrets": [],
+  "gitlab_scopes": [
+    "api:read_issue",
+    "api:comment_issue"
+  ],
+  "input_schema": {
+    "type": "delivery_issue"
+  },
+  "output_schema": {
+    "type": "stage_result"
+  },
+  "artifact_policy": {
+    "required": [
+      "result",
+      "evidence"
+    ],
+    "retention": "30d",
+    "publish_to_gitlab": true,
+    "signed_summaries": true,
+    "attach_manifests": true
+  },
+  "timeout_seconds": 60,
+  "retry_policy": {
+    "max_attempts": 3,
+    "backoff_secs": 15
+  },
+  "max_parallelism": 4,
+  "dependencies": [],
+  "approval_required": false,
+  "entrypoint": [
+    "autodev-stage-runtime"
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stage-context.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "stage",
+    "run",
+    "attempt",
+    "issue",
+    "work_order",
+    "invariants",
+    "pipeline_contract"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "autodev-stage-context-v1"
+    },
+    "stage": { "type": "object" },
+    "run": { "type": "object" },
+    "attempt": { "type": "object" },
+    "issue": { "type": "object" },
+    "work_order": { "type": "object" },
+    "policy": { "type": "object" },
+    "invariants": { "type": "object" },
+
+    "resolved_secrets": {
+      "type": "array"
+    },
+    "runtime_isolation": { "type": "object" },
+    "materialized_repos": {
+      "type": "array"
+    },
+    "pipeline_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stage_catalog",
+        "pipeline_catalog",
+        "runtime_images"
+      ],
+      "properties": {
+        "stage_catalog": { "type": "array" },
+        "pipeline_catalog": { "type": "object" },
+        "runtime_images": {
+          "type": "object"
+        }
+      }
+    },
+    "paths": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

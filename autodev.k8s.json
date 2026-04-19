@@ -1,0 +1,18 @@
+{
+  "paths": {
+    "root_dir": "/app",
+    "data_dir": "/var/lib/autodev",
+    "work_order_repo": "/var/lib/autodev/work-orders",
+    "repo_roots": []
+  },
+  "gitlab": {
+    "token_name": "gitlab-token"
+  },
+  "stores": {
+    "ratchet_postgres_dsn": "noop"
+  },
+  "secrets": {
+    "local_keychain_service": "autodev",
+    "gcp_project": "mph-nitro-prod"
+  }
+}

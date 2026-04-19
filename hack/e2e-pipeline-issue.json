@@ -1,0 +1,160 @@
+{
+  "id": "issue-pipeline-0001",
+  "project_id": "hack/local",
+  "iid": 1,
+  "title": "Meta-pipeline validation for universal stage images",
+  "description": "Run the materialized pipeline plan using the fixture stage images and e2e repos.",
+  "labels": [
+    "delivery/requested",
+    "pipeline/meta"
+  ],
+  "work_order": {
+    "id": "wo-meta-0001",
+    "source_issue_id": "issue-pipeline-0001",
+    "issue_type": "new_product",
+    "requested_outcome": "Validate the meta-pipeline by materializing the plan and executing it against the fixture repos.",
+    "policy_profile": "meta-validation",
+    "pipeline_template": "product-bootstrap-v1",
+    "issuer_authority": {
+      "can_create_pipeline": true,
+      "roles": [
+        "platform-admin",
+        "pipeline-author"
+      ]
+    },
+    "testing": {
+      "strategy": "governed-inspection",
+      "immutable": true,
+      "readable_by_agent": true,
+      "executable_by_agent": true,
+      "inspection_points": [
+        {
+          "name": "spec",
+          "category": "spec",
+          "description": "Spec conformance test.",
+          "immutable": true,
+          "readable_by_agent": true,
+          "executable_by_agent": true
+        },
+        {
+          "name": "security",
+          "category": "security",
+          "description": "Security inspection test.",
+          "immutable": true,
+          "readable_by_agent": true,
+          "executable_by_agent": true
+        },
+        {
+          "name": "architecture",
+          "category": "architecture",
+          "description": "Architecture inspection test.",
+          "immutable": true,
+          "readable_by_agent": true,
+          "executable_by_agent": true
+        }
+      ]
+    },
+    "translation": {
+      "translator": "meta-pipeline",
+      "version": "v1",
+      "status": "translated",
+      "warnings": []
+    },
+    "delivery": {
+      "name": "meta-layout",
+      "primary_component": "app",
+      "selected_components": [
+        "app"
+      ],
+      "deploy_as_unit": true,
+      "documentation": {
+        "required": false,
+        "docs_component": "docs",
+        "required_kinds": []
+      },
+      "journal": {
+        "name": "autodev-e2e-work-orders",
+        "repo": {
+          "project_path": "mph-tech/autodev-e2e-work-orders",
+          "default_branch": "main",
+          "working_branch_prefix": "autodev",
+          "ref": "main",
+          "materialization_path": "data/repos/{run_id}/journal/autodev-e2e-work-orders"
+        },
+        "path": "runs",
+        "strategy": "git",
+        "description": "Work-order journal captured during the meta-pipeline validation."
+      },
+      "components": {
+        "app": {
+          "name": "meta-app",
+          "kind": "api",
+          "deployable": true,
+          "repo": {
+            "project_path": "mph-tech/autodev-e2e-app",
+            "default_branch": "main",
+            "working_branch_prefix": "autodev",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/components/app"
+          },
+          "release": {
+            "application": {
+              "artifact_name": "meta-app",
+              "image_repo": "registry.local/meta-app"
+            }
+          }
+        }
+      },
+      "environments": {
+        "local": {
+          "name": "local",
+          "gitops_repo": {
+            "project_path": "mph-tech/autodev-e2e-gitops",
+            "environment": "local",
+            "path": "clusters/local/meta-layout",
+            "promotion_branch": "main",
+            "cluster": "kind-local",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/gitops/local"
+          },
+          "approval_required": false,
+          "rollout_strategy": "recreate",
+          "runtime_secret_refs": []
+        },
+        "dev": {
+          "name": "dev",
+          "gitops_repo": {
+            "project_path": "mph-tech/autodev-e2e-gitops",
+            "environment": "dev",
+            "path": "clusters/dev/meta-layout",
+            "promotion_branch": "main",
+            "cluster": "dev-local",
+            "ref": "main",
+            "materialization_path": "data/repos/{run_id}/gitops/dev"
+          },
+          "approval_required": false,
+          "rollout_strategy": "rolling",
+          "runtime_secret_refs": []
+        }
+      },
+      "release": {
+        "application": {
+          "artifact_name": "meta-app",
+          "image_repo": "registry.local/meta-app"
+        }
+      }
+    }
+  },
+  "approval": {
+    "label": "delivery/approved",
+    "approved": false,
+    "approved_by": "",
+    "approved_at": null
+  },
+  "merge_requests": [],
+  "artifacts": [],
+  "metadata": {
+    "tenant": "meta-validation"
+  },
+  "updated_at": "2026-04-14T00:00:00Z"
+}

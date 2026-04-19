@@ -1,0 +1,17 @@
+{
+  "run_id": "run-00001",
+  "issue_id": "issue-1001",
+  "stage": "implement",
+  "repo_scope": "platform/example-service",
+  "environment": "dev",
+  "service_scope": "example-service",
+  "scope_type": "global",
+  "scope_key": "global",
+  "category": "secrets",
+  "fingerprint": "plaintext-secret-gitops-manifest",
+  "title": "No plaintext secrets in GitOps-managed manifests",
+  "summary": "Plaintext secret values were detected in a GitOps-managed manifest path.",
+  "severity": "high",
+  "outcome_impact": "block",
+  "evidence_uri": "artifacts://run-00001/security/evidence.json"
+}

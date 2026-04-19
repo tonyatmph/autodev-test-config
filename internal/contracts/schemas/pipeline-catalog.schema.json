@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pipeline-catalog.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "issue_types", "pipelines", "testing_policies"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "autodev-pipeline-catalog-v1" },
+    "issue_types": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["family", "optimization_goals"],
+        "properties": {
+          "family": { "type": "string", "minLength": 1 },
+          "preferred_pipeline": { "type": "string", "minLength": 1 },
+          "optimization_goals": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "pipelines": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["family", "accepted_issue_types", "testing_policy", "summary"],
+        "properties": {
+          "family": { "type": "string", "minLength": 1 },
+          "accepted_issue_types": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "testing_policy": { "type": "string", "minLength": 1 },
+          "optimization_goals": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "stage_names": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "summary": { "type": "string", "minLength": 1 },
+          "creation_policy": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["allow_materialized_creation"],
+            "properties": {
+              "allow_materialized_creation": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    "testing_policies": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["strategy", "immutable", "readable_by_agent", "executable_by_agent", "inspection_points"],
+        "properties": {
+          "strategy": { "type": "string", "minLength": 1 },
+          "immutable": { "type": "boolean" },
+          "readable_by_agent": { "type": "boolean" },
+          "executable_by_agent": { "type": "boolean" },
+          "inspection_points": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "category", "immutable", "readable_by_agent", "executable_by_agent"],
+              "properties": {
+                "name": { "type": "string", "minLength": 1 },
+                "category": { "type": "string", "minLength": 1 },
+                "description": { "type": "string" },
+                "immutable": { "type": "boolean" },
+                "readable_by_agent": { "type": "boolean" },
+                "executable_by_agent": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
